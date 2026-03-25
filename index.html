@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Attention Is All You Need | Universidad Continental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Script para evitar el "flash" del tema al recargar la página -->
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        /* Colores Institucionales Universidad Continental */
+                        ucnavy: '#0f2b46',   /* Azul oscuro institucional */
+                        uccyan: '#00a4e4',   /* Celeste institucional */
+                        ucyellow: '#fdb913', /* Amarillo/Dorado institucional */
+                        
+                        /* Colores base para la app */
+                        darkbg: '#0a1929',   /* Fondo modo oscuro basado en UC Navy */
+                        lightbg: '#f8fafc',  /* Fondo modo claro */
+                        cardlight: '#ffffff',
+                        carddark: '#163250', /* Tarjetas modo oscuro */
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00a4e4;
+            border-radius: 4px;
+        }
+
+        /* Connecting Lines */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #00a4e4, #0f2b46, #00a4e4);
+            z-index: 0;
+            opacity: 0.2;
+        }
+
+        /* Animation Classes */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 164, 228, 0.4);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 164, 228, 0.2);
+        }
+
+        .glass-card {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="antialiased font-sans bg-lightbg text-slate-800 dark:bg-darkbg dark:text-slate-100 relative">
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" type="button" class="fixed top-6 right-6 z-50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-full text-lg p-3.5 shadow-lg bg-white dark:bg-slate-800 transition-all">
+        <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-ucnavy"></i>
+        <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-ucyellow"></i>
+    </button>
+
+    <!-- Hero Section -->
+    <header class="min-h-screen flex flex-col items-center justify-center relative px-4 text-center overflow-hidden">
+        
+        <!-- Hero Background Image & Overlay -->
+        <div class="absolute inset-0 z-0 opacity-10 dark:opacity-20 transition-opacity">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000" alt="Fondo IA" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-lightbg dark:to-darkbg z-0"></div>
+
+        <!-- Background decorative elements -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-uccyan rounded-full mix-blend-multiply filter blur-[128px] opacity-30 dark:opacity-20 animate-pulse z-0"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-ucnavy rounded-full mix-blend-multiply filter blur-[128px] opacity-20 dark:opacity-40 animate-pulse z-0" style="animation-delay: 2s;"></div>
+
+        <div class="z-10 fade-in-up visible relative">
+            <span class="px-5 py-2 rounded-full bg-uccyan/10 dark:bg-uccyan/20 border border-uccyan/30 text-uccyan dark:text-uccyan text-sm font-semibold tracking-wider uppercase mb-8 inline-block shadow-sm">
+                NIPS 2017 • Vaswani et al.
+            </span>
+            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 text-ucnavy dark:text-white glow-text">
+                Attention Is All You Need
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto font-light mb-10">
+                El paper que descartó las recurrencias, introdujo el <strong class="text-uccyan font-semibold">Transformer</strong>, y cambió el rumbo de la Inteligencia Artificial para siempre.
+            </p>
+            
+            <a href="#problema" class="inline-flex flex-col items-center text-slate-500 hover:text-uccyan dark:text-slate-400 dark:hover:text-uccyan transition-colors floating mt-8">
+                <span class="text-sm mb-2 uppercase tracking-widest font-semibold">Descubre cómo</span>
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Infographic Container -->
+    <main class="max-w-6xl mx-auto px-4 py-20 relative">
+        <div class="timeline-line hidden md:block dark:opacity-30"></div>
+
+        <!-- Section 1: The Problem -->
+        <section id="problema" class="mb-32 relative z-10 w-full flex flex-col md:flex-row items-center justify-between fade-in-up">
+            <div class="md:w-5/12 text-center md:text-right md:pr-12 mb-8 md:mb-0">
+                <div class="text-ucnavy dark:text-slate-400 text-6xl mb-6"><i class="fa-solid fa-hourglass-half"></i></div>
+                <h2 class="font-display text-3xl font-bold mb-4 text-ucnavy dark:text-white">El Problema Histórico</h2>
+                <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                    Antes de 2017, los modelos dominantes para secuencias (como la traducción) eran las <strong>Redes Neuronales Recurrentes (RNNs)</strong>. Su mayor problema era el procesamiento <em>secuencial</em> (palabra por palabra), creando un cuello de botella.
+                </p>
+                <div class="inline-block text-left bg-cardlight dark:bg-carddark p-5 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <ul class="text-sm space-y-3">
+                        <li class="flex items-center text-slate-700 dark:text-slate-300"><i class="fa-solid fa-circle-xmark text-red-500 mr-3 text-lg"></i> Difícil de paralelizar (Entrenamiento lento).</li>
+                        <li class="flex items-center text-slate-700 dark:text-slate-300"><i class="fa-solid fa-circle-xmark text-red-500 mr-3 text-lg"></i> Pérdida de memoria en secuencias muy largas.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Center Node -->
+            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-14 h-14 bg-white dark:bg-darkbg border-4 border-slate-300 dark:border-slate-600 rounded-full items-center justify-center z-10 shadow-lg">
+                <span class="text-slate-500 dark:text-slate-400 font-bold text-xl">1</span>
+            </div>
+
+            <div class="md:w-5/12">
+                <div class="bg-cardlight dark:bg-carddark border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-xl card-hover transition-all relative overflow-hidden group">
+                    <!-- Image container -->
+                    <div class="relative h-48 mb-4 rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=800" alt="Código y Cuello de Botella" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-ucnavy/60 flex items-center justify-center">
+                             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Recurrent_neural_network_unfold.svg/1200px-Recurrent_neural_network_unfold.svg.png" 
+                                 alt="RNN Secuencial" 
+                                 class="h-24 filter invert brightness-200">
+                        </div>
+                    </div>
+                    <p class="text-sm text-center text-slate-500 dark:text-slate-400 italic">Las RNNs forman cuellos de botella computacionales al procesar "t -> t+1".</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Solution -->
+        <section class="mb-32 relative z-10 w-full flex flex-col md:flex-row-reverse items-center justify-between fade-in-up">
+            <div class="md:w-5/12 text-center md:text-left md:pl-12 mb-8 md:mb-0">
+                <div class="text-uccyan text-6xl mb-6"><i class="fa-solid fa-bolt"></i></div>
+                <h2 class="font-display text-3xl font-bold mb-4 text-ucnavy dark:text-white">La Solución: El Transformer</h2>
+                <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Los autores propusieron una arquitectura disruptiva: <strong>"Deshagámonos de la recurrencia por completo"</strong>. El Transformer procesa todas las palabras al mismo tiempo, conectándolas mediante mecanismos matemáticos de atención.
+                </p>
+                <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+                    <span class="bg-uccyan/10 dark:bg-uccyan/20 text-uccyan dark:text-uccyan px-4 py-2 rounded-full text-sm font-semibold border border-uccyan/30 shadow-sm"><i class="fa-solid fa-server mr-2"></i>Altamente Paralelizable</span>
+                    <span class="bg-uccyan/10 dark:bg-uccyan/20 text-uccyan dark:text-uccyan px-4 py-2 rounded-full text-sm font-semibold border border-uccyan/30 shadow-sm"><i class="fa-solid fa-gauge-high mr-2"></i>Velocidad Extrema</span>
+                </div>
+            </div>
+            
+            <!-- Center Node -->
+            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-14 h-14 bg-white dark:bg-darkbg border-4 border-uccyan rounded-full items-center justify-center z-10 shadow-[0_0_15px_rgba(0,164,228,0.5)]">
+                <span class="text-uccyan font-bold text-xl">2</span>
+            </div>
+
+            <div class="md:w-5/12">
+                <div class="bg-cardlight dark:bg-carddark border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-xl card-hover transition-all relative overflow-hidden group">
+                    <!-- Image container -->
+                    <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" alt="Red Global y Paralelismo" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ucnavy via-transparent to-transparent opacity-80"></div>
+                        <div class="absolute bottom-4 left-0 w-full text-center text-white font-bold tracking-widest text-lg drop-shadow-md">PROCESAMIENTO PARALELO</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-3 mb-2">
+                        <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-inner animate-pulse" style="animation-delay: 0.1s"><i class="fa-solid fa-w text-uccyan text-xl"></i></div>
+                        <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-inner animate-pulse" style="animation-delay: 0.2s"><i class="fa-solid fa-o text-uccyan text-xl"></i></div>
+                        <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-inner animate-pulse" style="animation-delay: 0.3s"><i class="fa-solid fa-r text-uccyan text-xl"></i></div>
+                        <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-inner animate-pulse" style="animation-delay: 0.4s"><i class="fa-solid fa-d text-uccyan text-xl"></i></div>
+                    </div>
+                    <p class="text-sm tracking-wide text-center text-slate-500 dark:text-slate-400 mt-4">Todas las entradas se analizan a la vez.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Core Concepts -->
+        <section class="mb-32 relative z-10 w-full fade-in-up">
+            <div class="text-center mb-16 relative z-10 pb-4">
+                <span class="text-uccyan font-bold tracking-widest uppercase text-sm mb-2 block">El Motor Matemático</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-ucnavy dark:text-white">Los 3 Pilares del Modelo</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Concept 1 -->
+                <div class="bg-cardlight dark:bg-carddark border border-slate-200 dark:border-slate-700 rounded-3xl p-8 shadow-xl card-hover transition-all text-center relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-uccyan"></div>
+                    <!-- Small illustration -->
+                    <div class="w-20 h-20 mx-auto bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-network-wired text-3xl text-uccyan"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-ucnavy dark:text-white">Self-Attention</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Permite a cada palabra mirar a <em>todas las demás palabras</em> en la oración. El modelo calcula matemáticamente qué palabras están más relacionadas entre sí para entender el contexto.
+                    </p>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="bg-cardlight dark:bg-carddark border border-slate-200 dark:border-slate-700 rounded-3xl p-8 shadow-xl card-hover transition-all text-center relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-ucnavy dark:bg-slate-500"></div>
+                    <div class="w-20 h-20 mx-auto bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-layer-group text-3xl text-ucnavy dark:text-slate-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-ucnavy dark:text-white">Multi-Head Attention</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Calcula la "atención" múltiples veces en paralelo (diferentes "cabezas"). Esto permite a la IA enfocarse en diferentes tipos de relaciones (gramaticales, semánticas) simultáneamente.
+                    </p>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="bg-cardlight dark:bg-carddark border border-slate-200 dark:border-slate-700 rounded-3xl p-8 shadow-xl card-hover transition-all text-center relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-ucyellow"></div>
+                    <div class="w-20 h-20 mx-auto bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wave-square text-3xl text-ucyellow"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-ucnavy dark:text-white">Positional Encoding</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Al procesar todo a la vez, el modelo pierde el orden de las palabras. Para solucionarlo, inyecta una señal matemática (basada en senos y cosenos) que indica la posición exacta de cada token.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Architecture Diagram -->
+        <section class="mb-32 relative z-10 w-full fade-in-up">
+            <!-- Center Node -->
+            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 -top-16 w-14 h-14 bg-white dark:bg-darkbg border-4 border-ucnavy dark:border-slate-500 rounded-full items-center justify-center z-10 shadow-lg">
+                <span class="text-ucnavy dark:text-slate-300 text-xl"><i class="fa-solid fa-microchip"></i></span>
+            </div>
+
+            <div class="bg-white/80 dark:bg-carddark/80 glass-card border border-slate-200 dark:border-slate-700 rounded-[2.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden">
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-14 text-ucnavy dark:text-white">Arquitectura Encoder-Decoder</h2>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-stretch justify-center">
+                    
+                    <!-- Encoder -->
+                    <div class="flex-1 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-600 text-center relative shadow-inner">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-ucnavy text-white font-bold px-6 py-2 rounded-full shadow-lg text-sm tracking-wide">1. ENCODER</div>
+                        <div class="space-y-4 mt-6">
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-medium dark:text-slate-200 border border-slate-100 dark:border-slate-600">Entradas (Inputs)</div>
+                            <div class="text-ucnavy dark:text-slate-400"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-medium dark:text-slate-200 border-l-4 border-ucyellow">Positional Encoding</div>
+                            <div class="text-ucnavy dark:text-slate-400"><i class="fa-solid fa-arrow-up"></i></div>
+                            
+                            <div class="border-2 border-uccyan border-dashed p-5 rounded-xl bg-uccyan/5 relative group">
+                                <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-uccyan text-white text-xs px-2 py-1 rounded -rotate-90 hidden lg:block font-bold">Nx</div>
+                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm mb-3 font-bold text-uccyan border border-slate-100 dark:border-slate-600">Multi-Head Self-Attention</div>
+                                <div class="text-slate-400 text-xs mb-3 font-mono">Add & Norm</div>
+                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-bold text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600">Feed Forward</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Middle Connection -->
+                    <div class="flex items-center justify-center text-4xl text-ucnavy dark:text-slate-400 md:rotate-[-90deg]">
+                        <i class="fa-solid fa-arrow-down md:fa-arrow-right animate-bounce"></i>
+                    </div>
+
+                    <!-- Decoder -->
+                    <div class="flex-1 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-600 text-center relative shadow-inner">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-ucnavy text-white font-bold px-6 py-2 rounded-full shadow-lg text-sm tracking-wide">2. DECODER</div>
+                        <div class="space-y-4 mt-6">
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-medium dark:text-slate-200 border-2 border-slate-300 dark:border-slate-500">Salidas desplazadas</div>
+                            <div class="text-ucnavy dark:text-slate-400"><i class="fa-solid fa-arrow-up"></i></div>
+                            
+                            <div class="border-2 border-ucnavy dark:border-slate-500 border-dashed p-5 rounded-xl bg-slate-200/50 dark:bg-slate-700/30 relative">
+                                <div class="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-ucnavy text-white text-xs px-2 py-1 rounded rotate-90 hidden lg:block font-bold">Nx</div>
+                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm mb-3 font-bold text-slate-600 dark:text-slate-300 border-l-4 border-red-500 text-sm">Masked Multi-Head Attention</div>
+                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm mb-3 font-bold text-uccyan border-l-4 border-green-500 text-sm relative">
+                                    Multi-Head Attention
+                                    <span class="absolute -left-8 top-1/2 transform -translate-y-1/2 text-green-500 hidden xl:block text-xs"><i class="fa-solid fa-arrow-right"></i> Encoder</span>
+                                </div>
+                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-bold text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600">Feed Forward</div>
+                            </div>
+                            <div class="text-ucnavy dark:text-slate-400"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-sm font-medium dark:text-slate-200 border border-slate-100 dark:border-slate-600">Linear & Softmax</div>
+                            <div class="bg-gradient-to-r from-ucnavy to-uccyan p-3 rounded-lg shadow-md font-bold text-white mt-2">Probabilidades de Salida</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Results -->
+        <section class="mb-20 relative z-10 w-full fade-in-up">
+            <!-- Center Node -->
+            <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 -top-6 w-14 h-14 bg-white dark:bg-darkbg border-4 border-green-500 rounded-full items-center justify-center z-10 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                <span class="text-green-500 font-bold text-xl"><i class="fa-solid fa-trophy"></i></span>
+            </div>
+
+            <div class="text-center pt-10">
+                <h2 class="font-display text-4xl font-bold mb-12 text-ucnavy dark:text-white">Resultados Revolucionarios</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Stat 1 -->
+                    <div class="bg-white dark:bg-carddark p-10 rounded-[2rem] border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xl relative overflow-hidden group">
+                        <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
+                            <i class="fa-solid fa-chart-line text-[150px] text-ucnavy dark:text-white"></i>
+                        </div>
+                        <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-uccyan mb-4">28.4</div>
+                        <div class="text-xl font-bold text-ucnavy dark:text-white mb-3">BLEU Score</div>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm text-center relative z-10">Nuevo récord en WMT 2014 Inglés-Alemán, superando ensambles complejos por más de 2 puntos.</p>
+                    </div>
+
+                    <!-- Stat 2 -->
+                    <div class="bg-white dark:bg-carddark p-10 rounded-[2rem] border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shadow-xl relative overflow-hidden group">
+                        <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
+                            <i class="fa-solid fa-stopwatch text-[150px] text-ucnavy dark:text-white"></i>
+                        </div>
+                        <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-ucyellow to-orange-400 mb-4">3.5 Días</div>
+                        <div class="text-xl font-bold text-ucnavy dark:text-white mb-3">Entrenamiento</div>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm text-center relative z-10">En solo 8 GPUs P100. Una pequeña fracción del costo de entrenamiento de los mejores modelos de la época.</p>
+                    </div>
+                </div>
+
+                <!-- The Legacy -->
+                <div class="mt-14 relative rounded-3xl overflow-hidden shadow-2xl max-w-4xl mx-auto border border-uccyan/30">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200" alt="IA Generativa" class="absolute inset-0 w-full h-full object-cover opacity-20 dark:opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-r from-ucnavy via-ucnavy/90 to-uccyan/80"></div>
+                    <div class="relative p-10 md:p-12 text-left flex flex-col md:flex-row items-center gap-8">
+                        <div class="text-6xl text-ucyellow drop-shadow-lg"><i class="fa-solid fa-rocket"></i></div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-3">El Legado del Transformer</h3>
+                            <p class="text-slate-200 text-lg leading-relaxed">
+                                Este paper fundó las bases para la explosión moderna de la IA Generativa. 
+                                Todos los grandes modelos actuales, como <span class="font-bold text-ucyellow">ChatGPT, Claude, Gemini y Llama</span>, 
+                                están basados en esta misma arquitectura revolucionaria.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Autor de la Infografía -->
+        <section class="mb-10 relative z-10 w-full fade-in-up mt-24">
+            <div class="bg-white dark:bg-carddark border-2 border-uccyan/20 dark:border-slate-700 rounded-3xl p-8 max-w-4xl mx-auto shadow-[0_20px_50px_-12px_rgba(0,164,228,0.15)] relative overflow-hidden flex flex-col md:flex-row items-center gap-8 group">
+                <!-- Decorative background glow -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-uccyan/10 dark:bg-uccyan/5 rounded-full blur-3xl -z-10 group-hover:bg-uccyan/20 transition-colors duration-500"></div>
+                <div class="absolute bottom-0 left-0 w-40 h-40 bg-ucyellow/10 dark:bg-ucyellow/5 rounded-full blur-2xl -z-10"></div>
+                
+                <!-- User Avatar/Icon -->
+                <div class="flex-shrink-0 w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-slate-100 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800 flex items-center justify-center shadow-xl relative z-10">
+                    <i class="fa-solid fa-user-graduate text-6xl text-ucnavy dark:text-slate-400"></i>
+                </div>
+                
+                <!-- Author Information -->
+                <div class="text-center md:text-left flex-1 relative z-10">
+                    <div class="text-uccyan text-sm font-bold tracking-widest uppercase mb-2">Diseño y Desarrollo de la Infografía</div>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold text-ucnavy dark:text-white mb-3">Marco Antonio Bonifacio Ruiz</h2>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mt-6">
+                        
+                        <!-- Logo Universidad Continental -->
+                        <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/80 py-2.5 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Escudo_de_la_Universidad_Continental.svg/512px-Escudo_de_la_Universidad_Continental.svg.png" 
+                                     alt="Logo Universidad Continental" 
+                                     class="max-w-full max-h-full object-contain"
+                                     onerror="this.src='https://ui-avatars.com/api/?name=UC&background=0f2b46&color=fff&rounded=false&font-size=0.5'">
+                            </div>
+                            <div class="text-left">
+                                <div class="text-sm font-bold text-ucnavy dark:text-white leading-tight">Universidad</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Continental</div>
+                            </div>
+                        </div>
+
+                        <!-- Logo Ingeniería de Sistemas e Informática -->
+                        <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/80 py-2.5 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-12 h-12 bg-ucnavy border border-slate-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                                <i class="fa-solid fa-laptop-code text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-sm font-bold text-ucnavy dark:text-white leading-tight">Ingeniería de Sistemas</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">e Informática</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white dark:bg-[#06111c] border-t border-slate-200 dark:border-slate-800 py-12 text-center mt-10 relative z-10 transition-colors">
+        <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-xl mx-auto px-4">
+            Infografía educativa basada en el paper original: <br>
+            <a href="#" class="text-uccyan hover:underline transition-all font-semibold mt-2 inline-block">"Attention Is All You Need" (Vaswani et al., NIPS 2017)</a>
+        </p>
+        <div class="flex justify-center gap-6 text-slate-400 dark:text-slate-500 text-2xl">
+            <i class="fa-brands fa-html5 hover:text-orange-500 transition-colors cursor-pointer transform hover:scale-110" title="HTML5"></i>
+            <i class="fa-brands fa-css3-alt hover:text-blue-500 transition-colors cursor-pointer transform hover:scale-110" title="CSS3/Tailwind"></i>
+            <i class="fa-solid fa-code hover:text-uccyan transition-colors cursor-pointer transform hover:scale-110" title="Código Abierto"></i>
+        </div>
+        <div class="mt-8 text-xs text-slate-400 dark:text-slate-600">
+            &copy; 2024 Marco Antonio Bonifacio Ruiz • Universidad Continental
+        </div>
+    </footer>
+
+    <!-- Scripts para interactividad y animaciones -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Theme Toggle Logic ---
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+            // Set initial icon based on current theme
+            if (document.documentElement.classList.contains('dark')) {
+                lightIcon.classList.remove('hidden');
+            } else {
+                darkIcon.classList.remove('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                // Toggle icons
+                darkIcon.classList.toggle('hidden');
+                lightIcon.classList.toggle('hidden');
+
+                // If is dark mode
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    // if is light mode
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            });
+
+            // --- Scroll Animations Logic ---
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            const animatedElements = document.querySelectorAll('.fade-in-up');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
