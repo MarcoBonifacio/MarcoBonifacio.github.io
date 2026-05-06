@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Impacto de la Migración a la Nube - Los Arquitectos de la Nube</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Urbanist:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131a26;
+            --primary: #22c55e; /* Verde ciberseguridad */
+            --primary-glow: rgba(34, 197, 94, 0.3);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Urbanist', sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* HEADER DE LA INFOGRAFÍA */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .team-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        h1 span {
+            color: var(--primary);
+        }
+
+        .meta-info {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* GRID PRINCIPAL DE LA INFOGRAFÍA */
+        .infographic-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .infographic-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        /* ESTILO DE TARJETAS (CARDS) */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            color: #ffffff;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* CONTENIDO ESPECÍFICO */
+        /* Sección de Objetivos */
+        .objective-item {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            align-items: flex-start;
+        }
+
+        .objective-num {
+            background: var(--border);
+            color: var(--primary);
+            font-weight: 700;
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Flujograma PRISMA */
+        .prisma-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .prisma-flow {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .prisma-step {
+            background: #1c2533;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            flex: 1;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .prisma-step:hover {
+            background: rgba(34, 197, 94, 0.05);
+            border-color: var(--primary);
+        }
+
+        .prisma-step h4 {
+            color: var(--primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .prisma-step .num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .arrow {
+            text-align: center;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        /* Tabla de Fuentes */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        tr:hover td {
+            color: #ffffff;
+            background-color: rgba(34, 197, 94, 0.02);
+        }
+
+        /* Pie de página con Enlace de la Matriz */
+        .footer-action {
+            text-align: center;
+            margin-top: 40px;
+            background: linear-gradient(135deg, #131a26 0%, #0b0f19 100%);
+            border: 1px solid var(--primary);
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .btn-matriz {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--primary);
+            color: #000000;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-matriz:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px var(--primary);
+        }
+
+        .authors-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .author-tag {
+            background: rgba(255,255,255,0.05);
+            padding: 4px 12px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div class="team-badge">Los Arquitectos de la Nube</div>
+            <h1>Seguridad en la Migración <span>Cloud Computing</span></h1>
+            <p class="meta-info">Impacto en la gestión de bases de datos empresariales • Avance de Investigación AAC02</p>
+        </header>
+
+        <div class="infographic-grid">
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <h2>Planteamiento de la Problemática</h2>
+                </div>
+                <p>
+                    La migración de bases de datos desde infraestructuras locales hacia la nube representa una evolución competitiva, pero expone información crítica a <strong>vulnerabilidades emergentes</strong>. Los vacíos de control se concentran en la falta de marcos de gobernanza sólidos y en la incorrecta interpretación del <strong>modelo de responsabilidad compartida</strong> entre los proveedores de servicios (CSP) y las empresas locales.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-crosshairs"></i></div>
+                    <h2>Marco de Objetivos</h2>
+                </div>
+                <p><strong>Objetivo General:</strong> Analizar el impacto de la migración a la nube en la seguridad informática y la gestión de datos considerando las técnicas de mitigación actuales.</p>
+                
+                <div class="objective-item">
+                    <div class="objective-num">1</div>
+                    <p>Identificar vulnerabilidades críticas y ciberamenazas durante y tras el proceso de migración.</p>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-num">2</div>
+                    <p>Evaluar efectos sobre la eficiencia técnica y gobernanza de bases de datos empresariales.</p>
+                </div>
+                <div class="objective-item">
+                    <div class="objective-num">3</div>
+                    <p>Clasificar mecanismos de defensa eficientes (Cifrado, IAM robusto y Gobernanza de TI).</p>
+                </div>
+            </div>
+
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-filter"></i></div>
+                    <h2>Metodología: Flujo de Selección de Artículos (PRISMA)</h2>
+                </div>
+                <p>Filtro y cribado sistemático ejecutado por el equipo para delimitar el marco empírico de 15 fuentes confiables:</p>
+                
+                <div class="prisma-flow">
+                    <div class="prisma-step">
+                        <h4>Identificación</h4>
+                        <div class="num">45</div>
+                        <p style="font-size: 11px;">Registros en bases indexadas</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-circle-arrow-right"></i></div>
+                    <div class="prisma-step">
+                        <h4>Cribado</h4>
+                        <div class="num">35</div>
+                        <p style="font-size: 11px;">Eliminación de duplicados</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-circle-arrow-right"></i></div>
+                    <div class="prisma-step">
+                        <h4>Elegibilidad</h4>
+                        <div class="num">25</div>
+                        <p style="font-size: 11px;">Evaluados a texto completo</p>
+                    </div>
+                    <div class="arrow"><i class="fa-solid fa-circle-arrow-right"></i></div>
+                    <div class="prisma-step" style="border-color: var(--primary);">
+                        <h4>Inclusión</h4>
+                        <div class="num" style="color: var(--primary);">15</div>
+                        <p style="font-size: 11px;">Fuentes de revisión finales</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-table"></i></div>
+                    <h2>Muestra del Portafolio de Fuentes Seleccionadas (APA)</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Autor(es) / Año</th>
+                                <th>Título Clave</th>
+                                <th>Revista Académica</th>
+                                <th>Base de Datos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gómez, J. (2024)</td>
+                                <td>Amenazas emergentes en computación en la nube</td>
+                                <td>Dialnet</td>
+                                <td>Dialnet</td>
+                            </tr>
+                            <tr>
+                                <td>Zambrano & Vera (2024)</td>
+                                <td>Análisis de protocolos de seguridad en la nube</td>
+                                <td>Dialnet</td>
+                                <td>Dialnet</td>
+                            </tr>
+                            <tr>
+                                <td>Silva, A. (2024)</td>
+                                <td>Impacto de los marcos de gobierno de TI</td>
+                                <td>Dialnet</td>
+                                <td>Dialnet</td>
+                            </tr>
+                            <tr>
+                                <td>Aguilar, A. (2025)</td>
+                                <td>Ciberseguridad: Defensa Ante Infiltraciones</td>
+                                <td>SciELO México</td>
+                                <td>SciELO</td>
+                            </tr>
+                            <tr>
+                                <td>Roncato, C. (2024)</td>
+                                <td>Gestión de identidades y accesos eficiente en la nube</td>
+                                <td>Dialnet</td>
+                                <td>Dialnet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h2>Sistemas de Mitigación Recomendados</h2>
+                </div>
+                <ul style="list-style: none; padding-left: 0; display: grid; gap: 15px;">
+                    <li>
+                        <strong style="color: var(--primary);"><i class="fa-solid fa-key"></i> Encriptación Extremo a Extremo:</strong> 
+                        Cifrado de bases de datos tanto en tránsito como en reposo permanente para anular la lectura en caso de infiltraciones (Rojas, 2023).
+                    </li>
+                    <li>
+                        <strong style="color: var(--primary);"><i class="fa-solid fa-user-shield"></i> Arquitectura Zero Trust (IAM):</strong> 
+                        Autenticación multifactor robusta y control estricto de roles de privilegios mínimos (Roncato, 2024).
+                    </li>
+                    <li>
+                        <strong style="color: var(--primary);"><i class="fa-solid fa-file-shield"></i> Marcos de Gobierno de TI:</strong> 
+                        Alineación organizativa mediante COBIT o normas ISO de seguridad de la información (Silva, 2024).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+                    <h2>Referencias Teóricas Clave</h2>
+                </div>
+                <ul style="list-style: none; padding-left: 0; font-size: 13px; display: grid; gap: 10px;">
+                    <li>• Gómez, J. (2024). Amenazas emergentes en la computación en la nube: desafíos de seguridad y respuesta. <em>Dialnet</em>.</li>
+                    <li>• Silva, A. (2024). Impacto de los marcos de gobierno de TI en la seguridad de las organizaciones. <em>Dialnet</em>.</li>
+                    <li>• Aguilar, A. (2025). Ciberseguridad: Métodos de Defensa Ante Ataques. <em>SciELO México</em>.</li>
+                    <li>• Zambrano, K., & Vera, D. (2024). Protocolos de seguridad de datos en cloud computing. <em>Dialnet</em>.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-action">
+            <h3 style="font-family: 'Space Grotesk', sans-serif;">Acceso Directo a los Recursos de Investigación</h3>
+            <p style="font-size: 14px; margin-top: 5px;">Explora la matriz colaborativa de información con las 30 fuentes analizadas detalladamente por el equipo.</p>
+            <a href="https://docs.google.com/spreadsheets/d/1-DfkEe0Dpc3JaTrmoDSj-uyap4KizYk3/edit?usp=sharing" target="_blank" class="btn-matriz">
+                <i class="fa-solid fa-file-excel"></i> Ver Matriz de Información del Equipo
+            </a>
+
+            <div class="authors-list">
+                <span class="author-tag">Alvarez Q., Alexander</span>
+                <span class="author-tag">Baca M., Jerson Alejandro</span>
+                <span class="author-tag">Bonifacio R., Marco Antonio</span>
+                <span class="author-tag">Casa V., Yaidhson Dionicio</span>
+                <span class="author-tag">Leva S., Cesar David</span>
+                <span class="author-tag">Quispe B., Haydeé</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
